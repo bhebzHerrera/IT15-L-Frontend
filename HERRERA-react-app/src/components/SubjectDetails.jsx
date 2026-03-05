@@ -1,90 +1,56 @@
-import React from "react";
-
-// Modal overlay that shows complete information for a subject
 export default function SubjectDetails({ subject, onClose }) {
   if (!subject) return null;
 
-  const noneText = "None";
+  const preRequisites = subject.preRequisites.length > 0 ? subject.preRequisites.join(", ") : "none";
+  const coRequisites = subject.coRequisites.length > 0 ? subject.coRequisites.join(", ") : "none";
 
   return (
     <div
+      onClick={onClose}
       style={{
         position: "fixed",
         inset: 0,
-        background: "rgba(0,0,0,0.6)",
-        display: "flex",
-        alignItems: "center",
-        justifyContent: "center",
-        zIndex: 250,
+        background: "rgba(0,0,0,0.55)",
+        display: "grid",
+        placeItems: "center",
+        zIndex: 320,
       }}
-      onClick={onClose}
     >
-      <div
-        className="chart-card"
-        style={{
-          width: "520px",
-          maxWidth: "90vw",
-          maxHeight: "80vh",
-          overflowY: "auto",
-        }}
-        onClick={(e) => e.stopPropagation()}
+      <article
+        className="glass-card"
+        onClick={(event) => event.stopPropagation()}
+        style={{ width: "min(620px, 92vw)", padding: 16, maxHeight: "88vh", overflowY: "auto" }}
       >
-        <div
-          style={{
-            display: "flex",
-            justifyContent: "space-between",
-            alignItems: "flex-start",
-            marginBottom: 10,
-          }}
-        >
-          <div>
-            <div className="page-title" style={{ fontSize: 18 }}>
-              {subject.code} – {subject.title}
-            </div>
-            <div className="page-sub">
-              {subject.units} unit(s) • Offered: {subject.term}
-            </div>
-          </div>
-          <button
-            className="btn-sm"
-            onClick={onClose}
-            style={{ borderRadius: 999 }}
-          >
+        <div className="section-title-row">
+          <h3>
+            {subject.code} - {subject.title}
+          </h3>
+          <button type="button" className="ghost-btn" onClick={onClose}>
             Close
           </button>
         </div>
 
-        <div style={{ marginBottom: 10, fontSize: 13 }}>
-          <strong>Program assignment: </strong>
-          <span style={{ color: "var(--text2)" }}>{subject.program}</span>
-        </div>
-
-        <div style={{ marginBottom: 10, fontSize: 13 }}>
-          <strong>Pre‑requisites: </strong>
-          <span style={{ color: "var(--text2)" }}>
-            {subject.preRequisites && subject.preRequisites.length
-              ? subject.preRequisites.join(", ")
-              : noneText}
-          </span>
-        </div>
-
-        <div style={{ marginBottom: 10, fontSize: 13 }}>
-          <strong>Co‑requisites: </strong>
-          <span style={{ color: "var(--text2)" }}>
-            {subject.coRequisites && subject.coRequisites.length
-              ? subject.coRequisites.join(", ")
-              : noneText}
-          </span>
-        </div>
-
-        <div style={{ marginTop: 10, fontSize: 13 }}>
-          <strong>Description</strong>
-          <p style={{ color: "var(--text2)", marginTop: 4 }}>
-            {subject.description || "No description provided."}
+        <div style={{ display: "grid", gap: 8, fontSize: "0.92rem" }}>
+          <p>
+            <strong>Units:</strong> {subject.units}
+          </p>
+          <p>
+            <strong>Semester/Term Offered:</strong> {subject.term}
+          </p>
+          <p>
+            <strong>Pre-Requisites:</strong> {preRequisites}
+          </p>
+          <p>
+            <strong>Co-Requisites:</strong> {coRequisites}
+          </p>
+          <p>
+            <strong>Description:</strong> {subject.description || "none"}
+          </p>
+          <p>
+            <strong>Program Assignment:</strong> {subject.program}
           </p>
         </div>
-      </div>
+      </article>
     </div>
   );
 }
-

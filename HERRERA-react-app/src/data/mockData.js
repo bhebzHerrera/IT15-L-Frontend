@@ -1,4 +1,115 @@
-// Mock data for programs and subjects (acts like a simple in-memory database)
+export const dashboardStats = [
+  { label: "Total Students", value: "3,482", trend: "+8.7% from last sem", positive: true },
+  { label: "Active Courses", value: "126", trend: "+4 newly opened", positive: true },
+  { label: "Pending Applications", value: "214", trend: "-12 resolved today", positive: true },
+  { label: "Collection Rate", value: "92%", trend: "-1.3% vs target", positive: false },
+];
+
+export const enrollmentTrend = [
+  { month: "Sep", enrollees: 580 },
+  { month: "Oct", enrollees: 640 },
+  { month: "Nov", enrollees: 705 },
+  { month: "Dec", enrollees: 690 },
+  { month: "Jan", enrollees: 760 },
+  { month: "Feb", enrollees: 810 },
+];
+
+export const programDistribution = [
+  { name: "CCS", value: 1180 },
+  { name: "CBA", value: 930 },
+  { name: "COE", value: 760 },
+  { name: "CEA", value: 612 },
+];
+
+export const capacityData = [
+  { program: "BSIT", capacity: 500, enrolled: 468 },
+  { program: "BSCS", capacity: 420, enrolled: 389 },
+  { program: "BSBA", capacity: 460, enrolled: 417 },
+  { program: "BSED", capacity: 350, enrolled: 321 },
+];
+
+export const recentEnrollments = [
+  { id: 1, name: "Angelica Salazar", program: "BSIT", status: "Approved", date: "Mar 4, 2026" },
+  { id: 2, name: "Kevin Dela Cruz", program: "BSCS", status: "Pending", date: "Mar 4, 2026" },
+  { id: 3, name: "Nina Villareal", program: "BSBA", status: "ForReview", date: "Mar 3, 2026" },
+  { id: 4, name: "John Mark Lim", program: "BSED", status: "Approved", date: "Mar 3, 2026" },
+  { id: 5, name: "Patricia Gomez", program: "BSEE", status: "Rejected", date: "Mar 2, 2026" },
+];
+
+export const activities = [
+  {
+    id: 1,
+    title: "Batch approval completed",
+    description: "Registrar approved 42 transferee applications.",
+    time: "10m ago",
+  },
+  {
+    id: 2,
+    title: "Payment sync ready",
+    description: "Treasury posted 31 successful tuition settlements.",
+    time: "22m ago",
+  },
+  {
+    id: 3,
+    title: "Schedule conflict detected",
+    description: "Auto-check flagged overlap in BSIT section 2A.",
+    time: "49m ago",
+  },
+  {
+    id: 4,
+    title: "New curriculum imported",
+    description: "2026 revision for BSCS has been loaded in staging.",
+    time: "1h ago",
+  },
+];
+
+export const students = [
+  { id: "2026-0001", name: "Angelica Salazar", program: "BSIT", year: "2nd", status: "Enrolled" },
+  { id: "2026-0002", name: "Kevin Dela Cruz", program: "BSCS", year: "1st", status: "Pending" },
+  { id: "2026-0003", name: "Nina Villareal", program: "BSBA", year: "3rd", status: "Enrolled" },
+  { id: "2026-0004", name: "John Mark Lim", program: "BSED", year: "4th", status: "Probation" },
+  { id: "2026-0005", name: "Patricia Gomez", program: "BSEE", year: "2nd", status: "Dropped" },
+];
+
+export const courses = [
+  { code: "IT 301", title: "Web Systems and Technologies", slots: 45, enrolled: 43 },
+  { code: "CS 220", title: "Data Structures and Algorithms", slots: 40, enrolled: 35 },
+  { code: "BA 110", title: "Fundamentals of Marketing", slots: 38, enrolled: 36 },
+  { code: "ED 205", title: "Assessment of Learning", slots: 30, enrolled: 28 },
+];
+
+export const enrollmentPipeline = [
+  { stage: "Applied", count: 502 },
+  { stage: "Document Check", count: 371 },
+  { stage: "For Interview", count: 198 },
+  { stage: "Approved", count: 157 },
+];
+
+export const reportCards = [
+  { label: "Average Processing Time", value: "1.8 days" },
+  { label: "System Uptime", value: "99.3%" },
+  { label: "Retention Projection", value: "88.2%" },
+  { label: "At-Risk Students", value: "146" },
+];
+
+export const chatbotSuggestions = [
+  "What are the enrollment deadlines?",
+  "What requirements are needed?",
+  "How can I track my status?",
+];
+
+export const fallbackWeather = {
+  city: "Tagum City",
+  currentTemp: 30,
+  summary: "Partly cloudy",
+  forecast: [
+    { day: "Fri", tempMax: 31, rainChance: 25 },
+    { day: "Sat", tempMax: 32, rainChance: 40 },
+    { day: "Sun", tempMax: 31, rainChance: 35 },
+    { day: "Mon", tempMax: 30, rainChance: 55 },
+  ],
+};
+
 export const programs = [
   {
     id: 1,
@@ -9,29 +120,13 @@ export const programs = [
     totalUnits: 152,
     status: "Active",
     description:
-      "The BS in Information Technology program prepares students to design, develop, and manage IT solutions for organizations.",
-    createdAt: "2025-10-01",
+      "Prepares students to design, build, and manage IT solutions for organizations.",
+    createdAt: "2026-02-10",
     yearLevels: [
-      {
-        year: 1,
-        label: "1st Year",
-        subjects: ["IT101", "IT102", "GEN101", "GEN102"],
-      },
-      {
-        year: 2,
-        label: "2nd Year",
-        subjects: ["IT201", "IT202", "IT203", "GEN201"],
-      },
-      {
-        year: 3,
-        label: "3rd Year",
-        subjects: ["IT301", "IT302", "IT303"],
-      },
-      {
-        year: 4,
-        label: "4th Year",
-        subjects: ["IT401", "IT402", "CAP401"],
-      },
+      { year: 1, label: "1st Year", subjects: ["IT101", "IT102", "GEN101"] },
+      { year: 2, label: "2nd Year", subjects: ["IT201", "IT202", "IT203"] },
+      { year: 3, label: "3rd Year", subjects: ["IT301", "IT302", "IT303"] },
+      { year: 4, label: "4th Year", subjects: ["IT401", "IT402", "CAP401"] },
     ],
   },
   {
@@ -43,87 +138,45 @@ export const programs = [
     totalUnits: 160,
     status: "Active",
     description:
-      "Focuses on algorithms, data structures, and software engineering for building complex computer systems.",
-    createdAt: "2025-11-15",
+      "Focuses on algorithms, software engineering, and advanced computing systems.",
+    createdAt: "2026-01-12",
     yearLevels: [
-      {
-        year: 1,
-        label: "1st Year",
-        subjects: ["CS101", "CS102", "GEN101", "GEN103"],
-      },
-      {
-        year: 2,
-        label: "2nd Year",
-        subjects: ["CS201", "CS202", "CS203"],
-      },
-      {
-        year: 3,
-        label: "3rd Year",
-        subjects: ["CS301", "CS302", "CS303"],
-      },
-      {
-        year: 4,
-        label: "4th Year",
-        subjects: ["CS401", "CS402", "CAP402"],
-      },
+      { year: 1, label: "1st Year", subjects: ["CS101", "CS102", "GEN101"] },
+      { year: 2, label: "2nd Year", subjects: ["CS201", "CS202", "CS203"] },
+      { year: 3, label: "3rd Year", subjects: ["CS301", "CS302", "CS303"] },
+      { year: 4, label: "4th Year", subjects: ["CS401", "CS402", "CAP402"] },
     ],
   },
   {
     id: 3,
+    code: "BSBA",
+    name: "Bachelor of Science in Business Administration",
+    type: "Bachelor's",
+    durationYears: 4,
+    totalUnits: 148,
+    status: "Under Review",
+    description: "Develops competencies in finance, operations, and business strategy.",
+    createdAt: "2025-12-01",
+    yearLevels: [
+      { year: 1, label: "1st Year", subjects: ["BA101", "BA102", "GEN102"] },
+      { year: 2, label: "2nd Year", subjects: ["BA201", "BA202", "BA203"] },
+      { year: 3, label: "3rd Year", subjects: ["BA301", "BA302", "BA303"] },
+      { year: 4, label: "4th Year", subjects: ["BA401", "BA402", "CAP403"] },
+    ],
+  },
+  {
+    id: 4,
     code: "DICT",
     name: "Diploma in Information and Communication Technology",
     type: "Diploma",
     durationYears: 2,
     totalUnits: 72,
-    status: "Under Review",
-    description:
-      "A short, skills‑focused program on basic IT support, networking, and office productivity.",
-    createdAt: "2025-09-10",
-    yearLevels: [
-      {
-        year: 1,
-        label: "1st Year",
-        subjects: ["ICT101", "ICT102", "GEN101"],
-      },
-      {
-        year: 2,
-        label: "2nd Year",
-        subjects: ["ICT201", "ICT202", "OJT201"],
-      },
-    ],
-  },
-  {
-    id: 4,
-    code: "BSIS",
-    name: "Bachelor of Science in Information Systems",
-    type: "Bachelor's",
-    durationYears: 4,
-    totalUnits: 148,
     status: "Phased Out",
-    description:
-      "Combines business and IT to design and manage information systems for organizations.",
-    createdAt: "2024-06-20",
+    description: "Skills-based diploma program for support, networking, and IT service roles.",
+    createdAt: "2025-10-15",
     yearLevels: [
-      {
-        year: 1,
-        label: "1st Year",
-        subjects: ["IS101", "IS102", "GEN101"],
-      },
-      {
-        year: 2,
-        label: "2nd Year",
-        subjects: ["IS201", "IS202", "GEN202"],
-      },
-      {
-        year: 3,
-        label: "3rd Year",
-        subjects: ["IS301", "IS302"],
-      },
-      {
-        year: 4,
-        label: "4th Year",
-        subjects: ["IS401", "IS402"],
-      },
+      { year: 1, label: "1st Year", subjects: ["ICT101", "ICT102", "GEN101"] },
+      { year: 2, label: "2nd Year", subjects: ["ICT201", "ICT202", "OJT201"] },
     ],
   },
 ];
@@ -135,7 +188,7 @@ export const subjects = [
     units: 3,
     term: "Semester",
     program: "BSIT",
-    description: "Overview of the IT profession, basic computer concepts, and digital ethics.",
+    description: "Fundamental IT concepts, systems, and ethics.",
     preRequisites: [],
     coRequisites: [],
   },
@@ -145,7 +198,7 @@ export const subjects = [
     units: 3,
     term: "Semester",
     program: "BSIT",
-    description: "Fundamentals of programming using a high‑level language.",
+    description: "Basic programming logic and syntax.",
     preRequisites: [],
     coRequisites: [],
   },
@@ -155,7 +208,7 @@ export const subjects = [
     units: 3,
     term: "Semester",
     program: "BSIT",
-    description: "Object‑oriented programming concepts and techniques.",
+    description: "Object-oriented programming techniques.",
     preRequisites: ["IT102"],
     coRequisites: [],
   },
@@ -165,17 +218,7 @@ export const subjects = [
     units: 3,
     term: "Both",
     program: "BSIT",
-    description: "Frontend and backend web technologies for building modern web applications.",
-    preRequisites: ["IT201"],
-    coRequisites: [],
-  },
-  {
-    code: "IT302",
-    title: "Database Systems",
-    units: 3,
-    term: "Semester",
-    program: "BSIT",
-    description: "Relational database concepts, SQL, and basic database administration.",
+    description: "Frontend and backend web development practices.",
     preRequisites: ["IT201"],
     coRequisites: [],
   },
@@ -185,7 +228,7 @@ export const subjects = [
     units: 3,
     term: "Semester",
     program: "BSCS",
-    description: "Foundations of computing, problem‑solving, and basic programming.",
+    description: "Problem solving and computer science fundamentals.",
     preRequisites: [],
     coRequisites: [],
   },
@@ -195,18 +238,38 @@ export const subjects = [
     units: 4,
     term: "Semester",
     program: "BSCS",
-    description: "Core data structures, algorithm analysis, and problem‑solving strategies.",
+    description: "Core data structures and algorithm analysis.",
     preRequisites: ["CS101"],
     coRequisites: [],
   },
   {
-    code: "CS301",
-    title: "Operating Systems",
-    units: 4,
-    term: "Semester",
+    code: "CS302",
+    title: "Database Systems",
+    units: 3,
+    term: "Term",
     program: "BSCS",
-    description: "Concepts of operating systems, process management, and memory management.",
+    description: "Relational models, SQL, and data design.",
     preRequisites: ["CS201"],
+    coRequisites: [],
+  },
+  {
+    code: "BA101",
+    title: "Principles of Management",
+    units: 3,
+    term: "Semester",
+    program: "BSBA",
+    description: "Introduction to management functions and leadership.",
+    preRequisites: [],
+    coRequisites: [],
+  },
+  {
+    code: "BA202",
+    title: "Business Statistics",
+    units: 3,
+    term: "Term",
+    program: "BSBA",
+    description: "Statistical tools for business decision-making.",
+    preRequisites: ["BA101"],
     coRequisites: [],
   },
   {
@@ -215,7 +278,7 @@ export const subjects = [
     units: 3,
     term: "Term",
     program: "DICT",
-    description: "Hands‑on PC assembly, troubleshooting, and maintenance.",
+    description: "Hardware assembly and troubleshooting essentials.",
     preRequisites: [],
     coRequisites: [],
   },
@@ -223,9 +286,9 @@ export const subjects = [
     code: "ICT201",
     title: "Networking Fundamentals",
     units: 3,
-    term: "Term",
+    term: "Both",
     program: "DICT",
-    description: "Basic computer networking concepts and configuration.",
+    description: "Networking concepts and configuration basics.",
     preRequisites: ["ICT101"],
     coRequisites: [],
   },
@@ -235,19 +298,8 @@ export const subjects = [
     units: 3,
     term: "Semester",
     program: "General",
-    description: "General education course on personal development and self‑awareness.",
-    preRequisites: [],
-    coRequisites: [],
-  },
-  {
-    code: "GEN102",
-    title: "Purposive Communication",
-    units: 3,
-    term: "Semester",
-    program: "General",
-    description: "Develops communication skills for academic and professional settings.",
+    description: "General education course on personal development.",
     preRequisites: [],
     coRequisites: [],
   },
 ];
-

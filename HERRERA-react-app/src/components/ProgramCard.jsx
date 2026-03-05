@@ -1,47 +1,32 @@
-import React from "react";
-
-// Program summary card shown in the program list
-export default function ProgramCard({ program, onSelect }) {
+export default function ProgramCard({ program, selected, onSelect }) {
   return (
-    <div
-      className="stat-card"
-      style={{
-        cursor: "pointer",
-        marginBottom: 12,
-        display: "flex",
-        flexDirection: "column",
-        gap: 6,
-      }}
+    <article
       onClick={() => onSelect(program)}
+      className="glass-card"
+      style={{
+        padding: 12,
+        marginBottom: 10,
+        cursor: "pointer",
+        border: selected ? "1px solid rgba(88,246,198,0.55)" : undefined,
+      }}
     >
-      <div style={{ fontSize: 12, color: "var(--text2)" }}>{program.code}</div>
-      <div style={{ fontWeight: 700, fontSize: 15 }}>{program.name}</div>
-      <div style={{ fontSize: 12, color: "var(--text2)" }}>
-        {program.type} • {program.durationYears} years • {program.totalUnits}{" "}
-        units
-      </div>
-      <div style={{ marginTop: 4 }}>
-        <span
-          className="badge"
-          style={{
-            background:
-              program.status === "Active"
-                ? "rgba(16,185,129,0.1)"
-                : program.status === "Phased Out"
-                ? "rgba(239,68,68,0.1)"
-                : "rgba(245,158,11,0.1)",
-            color:
-              program.status === "Active"
-                ? "#10B981"
-                : program.status === "Phased Out"
-                ? "#EF4444"
-                : "#F59E0B",
-          }}
-        >
-          {program.status}
-        </span>
-      </div>
-    </div>
+      <p style={{ color: "var(--text-muted)", fontSize: "0.8rem" }}>{program.code}</p>
+      <h4 style={{ fontSize: "0.97rem", marginTop: 3 }}>{program.name}</h4>
+      <p style={{ color: "var(--text-muted)", marginTop: 5, fontSize: "0.84rem" }}>
+        {program.type} | {program.durationYears} years | {program.totalUnits} units
+      </p>
+      <span
+        className={`status-chip status-${
+          program.status === "Active"
+            ? "approved"
+            : program.status === "Phased Out"
+            ? "rejected"
+            : "forreview"
+        }`}
+        style={{ marginTop: 8, display: "inline-block" }}
+      >
+        {program.status}
+      </span>
+    </article>
   );
 }
-
