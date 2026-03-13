@@ -1,5 +1,6 @@
 import {
   activities,
+  attendancePatterns,
   capacityData,
   courses,
   dashboardStats,
@@ -28,6 +29,7 @@ export async function getDashboardData() {
     stats: dashboardStats,
     enrollmentTrend,
     programDistribution,
+    attendancePatterns,
     capacityData,
     recentEnrollments,
     activities,

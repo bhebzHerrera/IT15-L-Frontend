@@ -35,6 +35,7 @@ export default function Sidebar() {
       </div>
 
       <nav className="nav-menu glass-card">
+        <p className="navigation-caption">Main Navigation</p>
         {navItems.map((item) => {
           const Icon = item.icon;
           return (

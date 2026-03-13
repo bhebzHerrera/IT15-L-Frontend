@@ -21,6 +21,15 @@ export const programDistribution = [
   { name: "CEA", value: 612 },
 ];
 
+export const attendancePatterns = [
+  { day: "Mon", attendance: 92 },
+  { day: "Tue", attendance: 95 },
+  { day: "Wed", attendance: 89 },
+  { day: "Thu", attendance: 94 },
+  { day: "Fri", attendance: 87 },
+  { day: "Sat", attendance: 84 },
+];
+
 export const capacityData = [
   { program: "BSIT", capacity: 500, enrolled: 468 },
   { program: "BSCS", capacity: 420, enrolled: 389 },
@@ -102,11 +111,15 @@ export const fallbackWeather = {
   city: "Tagum City",
   currentTemp: 30,
   summary: "Partly cloudy",
+  humidity: 78,
+  windSpeed: 12,
+  icon: "cloud",
   forecast: [
-    { day: "Fri", tempMax: 31, rainChance: 25 },
-    { day: "Sat", tempMax: 32, rainChance: 40 },
-    { day: "Sun", tempMax: 31, rainChance: 35 },
-    { day: "Mon", tempMax: 30, rainChance: 55 },
+    { day: "Fri", tempMax: 31, tempMin: 25, rainChance: 25, icon: "sun" },
+    { day: "Sat", tempMax: 32, tempMin: 24, rainChance: 40, icon: "cloud" },
+    { day: "Sun", tempMax: 31, tempMin: 24, rainChance: 35, icon: "cloud" },
+    { day: "Mon", tempMax: 30, tempMin: 23, rainChance: 55, icon: "rain" },
+    { day: "Tue", tempMax: 29, tempMin: 23, rainChance: 60, icon: "rain" },
   ],
 };
 
