@@ -1,10 +1,8 @@
 import {
   BookOpenCheck,
   BookText,
-  ChartNoAxesCombined,
   GraduationCap,
   LayoutDashboard,
-  Settings,
   UserCog,
 } from "lucide-react";
 import { NavLink } from "react-router-dom";
@@ -14,9 +12,9 @@ const navItems = [
   { to: "/app/dashboard", label: "Dashboard", icon: LayoutDashboard },
   { to: "/app/programs", label: "Program Offerings", icon: BookOpenCheck },
   { to: "/app/subjects", label: "Subject Offerings", icon: BookText },
+  { to: "/app/students", label: "Students", icon: BookOpenCheck },
+  { to: "/app/courses", label: "Courses", icon: BookText },
   { to: "/app/enrollment", label: "Enrollment", icon: UserCog },
-  { to: "/app/reports", label: "Reports", icon: ChartNoAxesCombined },
-  { to: "/app/settings", label: "Settings", icon: Settings },
 ];
 
 export default function Sidebar() {
@@ -58,7 +56,7 @@ export default function Sidebar() {
           <strong>{user?.name}</strong>
           <p>{user?.role}</p>
         </div>
-        <button className="ghost-btn" onClick={logout} type="button">
+        <button className="ghost-btn" onClick={() => void logout()} type="button">
           Sign out
         </button>
       </div>

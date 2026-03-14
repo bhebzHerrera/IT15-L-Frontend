@@ -9,7 +9,7 @@ import {
   Sun,
   Wind,
 } from "lucide-react";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { fallbackWeather } from "../../data/mockData";
 import { fetchWeatherByCity, fetchWeatherByCoords } from "../../services/weatherService";
 import { sanitizeTextInput } from "../../utils/security";
@@ -53,6 +53,10 @@ export default function WeatherWidget() {
   const [isLoading, setIsLoading] = useState(true);
   const [message, setMessage] = useState("");
   const [clock, setClock] = useState(formatDateTime());
+  const [selectedDate, setSelectedDate] = useState(
+    new Date().toISOString().slice(0, 10)
+  );
+  const dateInputRef = useRef(null);
 
   const loadCityWeather = async (cityName) => {
     setIsLoading(true);
@@ -117,6 +121,21 @@ export default function WeatherWidget() {
     );
   };
 
+  const handleDateClick = () => {
+    const dateInput = dateInputRef.current;
+    if (!dateInput) {
+      return;
+    }
+
+    if (typeof dateInput.showPicker === "function") {
+      dateInput.showPicker();
+      return;
+    }
+
+    dateInput.focus();
+    dateInput.click();
+  };
+
   return (
     <article className="weather-card weather-showcase glass-card">
       <div className="weather-showcase-panel">
@@ -130,7 +149,24 @@ export default function WeatherWidget() {
 
         <div className="weather-hero-grid">
           <div className="weather-hero-copy">
-            <p className="weather-date-label">{clock.cityDate}</p>
+            <button
+              type="button"
+              className="weather-date-label weather-date-trigger"
+              onClick={handleDateClick}
+              aria-label="Open calendar"
+              title="Open calendar"
+            >
+              {clock.cityDate}
+            </button>
+            <input
+              ref={dateInputRef}
+              type="date"
+              value={selectedDate}
+              onChange={(event) => setSelectedDate(event.target.value)}
+              className="weather-hidden-date-input"
+              tabIndex={-1}
+              aria-hidden="true"
+            />
             <div className="weather-big-time">{clock.time}</div>
             <div className="weather-stat-row">
               <span>

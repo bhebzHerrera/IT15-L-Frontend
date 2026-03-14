@@ -7,7 +7,9 @@ import LoginPage from "./pages/LoginPage";
 import ProgramsPage from "./pages/ProgramsPage";
 import ReportsPage from "./pages/ReportsPage";
 import SettingsPage from "./pages/SettingsPage";
+import StudentsPage from "./pages/StudentsPage";
 import SubjectsPage from "./pages/SubjectsPage";
+import CoursesPage from "./pages/CoursesPage";
 
 function ProtectedRoute({ children }) {
   const { isAuthenticated } = useAuth();
@@ -49,8 +51,8 @@ export default function App() {
         <Route path="dashboard" element={<DashboardPage />} />
         <Route path="programs" element={<ProgramsPage />} />
         <Route path="subjects" element={<SubjectsPage />} />
-        <Route path="students" element={<Navigate to="/app/programs" replace />} />
-        <Route path="courses" element={<Navigate to="/app/subjects" replace />} />
+        <Route path="students" element={<StudentsPage />} />
+        <Route path="courses" element={<CoursesPage />} />
         <Route path="enrollment" element={<EnrollmentPage />} />
         <Route path="reports" element={<ReportsPage />} />
         <Route path="settings" element={<SettingsPage />} />

@@ -4,82 +4,93 @@ import apiClient from "../services/apiClient";
 const AUTH_STORAGE_KEY = "enrollment_frontend_auth";
 const AUTH_TOKEN_KEY = "enrollment_frontend_token";
 const SESSION_DURATION_MS = 8 * 60 * 60 * 1000;
-const USE_REAL_AUTH = import.meta.env.VITE_USE_REAL_AUTH === "true";
 
 const AuthContext = createContext(null);
 
 export function AuthProvider({ children }) {
   const [user, setUser] = useState(null);
 
+  const clearAuthState = () => {
+    localStorage.removeItem(AUTH_STORAGE_KEY);
+    localStorage.removeItem(AUTH_TOKEN_KEY);
+    delete apiClient.defaults.headers.common.Authorization;
+    setUser(null);
+  };
+
   useEffect(() => {
-    const savedUser = localStorage.getItem(AUTH_STORAGE_KEY);
-    const savedToken = localStorage.getItem(AUTH_TOKEN_KEY);
-    if (savedUser) {
+    let active = true;
+
+    const restoreSession = async () => {
+      const savedUser = localStorage.getItem(AUTH_STORAGE_KEY);
+      const savedToken = localStorage.getItem(AUTH_TOKEN_KEY);
+
+      if (!savedUser) {
+        return;
+      }
+
       try {
         const parsedUser = JSON.parse(savedUser);
         const isExpired =
           parsedUser.expiresAt && Number(parsedUser.expiresAt) < Date.now();
 
-        if (isExpired) {
-          localStorage.removeItem(AUTH_STORAGE_KEY);
-          localStorage.removeItem(AUTH_TOKEN_KEY);
+        if (isExpired || !savedToken) {
+          clearAuthState();
           return;
         }
 
-        if (savedToken) {
-          apiClient.defaults.headers.common.Authorization = `Bearer ${savedToken}`;
-        }
+        apiClient.defaults.headers.common.Authorization = `Bearer ${savedToken}`;
 
-        setUser(parsedUser);
+        const response = await apiClient.get("/me");
+        const authenticatedUser = {
+          ...response.data.data,
+          expiresAt: parsedUser.expiresAt,
+        };
+
+        localStorage.setItem(AUTH_STORAGE_KEY, JSON.stringify(authenticatedUser));
+
+        if (active) {
+          setUser(authenticatedUser);
+        }
       } catch {
-        localStorage.removeItem(AUTH_STORAGE_KEY);
-        localStorage.removeItem(AUTH_TOKEN_KEY);
+        clearAuthState();
       }
-    }
+    };
+
+    restoreSession();
+
+    return () => {
+      active = false;
+    };
   }, []);
 
   const login = async (credentials) => {
     const expiresAt = Date.now() + SESSION_DURATION_MS;
 
-    if (USE_REAL_AUTH) {
-      const response = await apiClient.post("/login", credentials);
-      const authenticatedUser = {
-        ...response.data.user,
-        expiresAt,
-      };
-      const token = response.data.token;
+    // Always reset stale session data before processing a new login attempt.
+    clearAuthState();
 
-      localStorage.setItem(AUTH_STORAGE_KEY, JSON.stringify(authenticatedUser));
-      localStorage.setItem(AUTH_TOKEN_KEY, token);
-      apiClient.defaults.headers.common.Authorization = `Bearer ${token}`;
-      setUser(authenticatedUser);
-      return authenticatedUser;
-    }
-
-    const fallbackEmail = "enrollment@umtc.edu.ph";
-    const email = credentials.email || fallbackEmail;
-    const name = email.split("@")[0] || "Enrollment Officer";
-
-    const mockUser = {
-      id: 1,
-      name,
-      role: credentials.role || "User",
-      email,
+    const response = await apiClient.post("/login", credentials);
+    const authenticatedUser = {
+      ...response.data.user,
       expiresAt,
     };
+    const token = response.data.token;
 
-    localStorage.setItem(AUTH_STORAGE_KEY, JSON.stringify(mockUser));
-    localStorage.setItem(AUTH_TOKEN_KEY, "mock-session-token");
-    apiClient.defaults.headers.common.Authorization = "Bearer mock-session-token";
-    setUser(mockUser);
-    return mockUser;
+    localStorage.setItem(AUTH_STORAGE_KEY, JSON.stringify(authenticatedUser));
+    localStorage.setItem(AUTH_TOKEN_KEY, token);
+    apiClient.defaults.headers.common.Authorization = `Bearer ${token}`;
+    setUser(authenticatedUser);
+    return authenticatedUser;
   };
 
-  const logout = () => {
-    localStorage.removeItem(AUTH_STORAGE_KEY);
-    localStorage.removeItem(AUTH_TOKEN_KEY);
-    delete apiClient.defaults.headers.common.Authorization;
-    setUser(null);
+  const logout = async () => {
+    try {
+      await apiClient.post("/logout");
+    } catch {
+      // Even if token revocation fails remotely, local session must still end.
+    }
+
+    clearAuthState();
   };
 
   const value = useMemo(

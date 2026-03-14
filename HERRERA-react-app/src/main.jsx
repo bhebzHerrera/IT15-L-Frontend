@@ -3,6 +3,7 @@ import { createRoot } from 'react-dom/client'
 import { BrowserRouter } from 'react-router-dom'
 import ErrorBoundary from './components/shared/ErrorBoundary'
 import { AuthProvider } from './context/AuthContext'
+import 'bootstrap/dist/css/bootstrap.min.css'
 import './index.css'
 import App from './App.jsx'
 

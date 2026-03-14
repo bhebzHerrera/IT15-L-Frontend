@@ -1,16 +1,92 @@
-# React + Vite
+# IT15-L Enrollment System (Frontend)
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+React + Vite frontend for the Enrollment System dashboard and management pages.
 
-Currently, two official plugins are available:
+## Project Overview
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) (or [oxc](https://oxc.rs) when used in [rolldown-vite](https://vite.dev/guide/rolldown)) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+This frontend includes:
 
-## React Compiler
+- Secure login flow with protected routes
+- Dashboard charts and analytics cards
+- Student, Course, and Enrollment pages
+- Recent Activity management UI
+- Weather widget integration
+- Mobile-responsive layout and navigation
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+## Tech Stack
 
-## Expanding the ESLint configuration
+- React 19
+- React Router
+- Axios
+- Recharts
+- Bootstrap
+- Vite
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+## Prerequisites
+
+- Node.js 18+ (Node.js 20+ recommended)
+- npm 9+
+- Running Laravel backend API
+
+## Frontend Setup
+
+Run these commands from this folder (`HERRERA-react-app`):
+
+```bash
+npm install
+cp .env.example .env
+npm run dev
+```
+
+App runs at:
+
+```text
+http://localhost:5173
+```
+
+## Environment Configuration
+
+Required `.env` values:
+
+```text
+VITE_API_BASE_URL=http://127.0.0.1:8000/api
+VITE_USE_REAL_AUTH=true
+VITE_USE_MOCK_DATA=false
+VITE_MOCK_LOGIN_EMAIL=admin@example.com
+VITE_MOCK_LOGIN_PASSWORD=admin12345
+```
+
+Notes:
+
+- `VITE_API_BASE_URL` must point to your backend API.
+- Use `VITE_USE_REAL_AUTH=true` to authenticate against Laravel.
+
+## Backend Setup Reference
+
+From backend folder (`IT15-L-Backend`):
+
+```bash
+composer install
+cp .env.example .env
+php artisan key:generate
+php artisan migrate --seed
+php artisan serve
+```
+
+Backend URL:
+
+```text
+http://127.0.0.1:8000
+```
+
+## Default Test Credentials
+
+- Email: `admin@example.com`
+- Password: `admin12345`
+
+## Build for Production
+
+```bash
+npm run build
+npm run preview
+```

@@ -16,6 +16,14 @@ const TITLES = {
     title: "Subject Offerings",
     subtitle: "Subject listing, term indicators, and pre/co-requisites",
   },
+  "/app/students": {
+    title: "Students",
+    subtitle: "Student list and enrolled course profiles",
+  },
+  "/app/courses": {
+    title: "Courses",
+    subtitle: "Course list, capacity, and enrolled students",
+  },
   "/app/enrollment": {
     title: "Enrollment",
     subtitle: "Current cycle applications and approvals",

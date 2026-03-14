@@ -2,7 +2,26 @@ import { ShieldCheck } from "lucide-react";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
-import { sanitizeEmailInput, sanitizeTextInput } from "../utils/security";
+import { sanitizeEmailInput } from "../utils/security";
+
+function getReadableLoginError(error) {
+  const statusCode = error?.response?.status;
+  const rawMessage = String(error?.message || "").toLowerCase();
+
+  if (statusCode === 401 || statusCode === 403 || rawMessage.includes("invalid email or password")) {
+    return "The email or password you entered is incorrect. Please try again.";
+  }
+
+  if (!error?.response) {
+    return "Unable to connect to the server. Please check your internet or API connection.";
+  }
+
+  if (statusCode >= 500) {
+    return "The server is currently unavailable. Please try again in a moment.";
+  }
+
+  return "Login failed. Please review your credentials and try again.";
+}
 
 export default function LoginPage() {
   const navigate = useNavigate();
@@ -48,7 +67,7 @@ export default function LoginPage() {
 
     const sanitizedCredentials = {
       email: sanitizeEmailInput(form.email),
-      password: sanitizeTextInput(form.password),
+      password: form.password,
     };
 
     setIsCelebrating(true);
@@ -58,9 +77,9 @@ export default function LoginPage() {
       window.setTimeout(() => {
         navigate("/app/dashboard", { replace: true });
       }, 900);
-    } catch {
+    } catch (error) {
       setIsCelebrating(false);
-      setLoginError("Login failed. Check your credentials or API connection.");
+      setLoginError(getReadableLoginError(error));
     }
   };
 
@@ -121,7 +140,7 @@ export default function LoginPage() {
           onChange={(event) =>
             setForm((prev) => ({ ...prev, email: event.target.value }))
           }
-          placeholder="name@psu.edu"
+          placeholder="admin@example.com"
           required
         />
         {errors.email ? <p className="form-error invalid-feedback d-block">{errors.email}</p> : null}
@@ -146,6 +165,11 @@ export default function LoginPage() {
         <button type="submit" disabled={isCelebrating}>
           {isCelebrating ? "Logging in..." : "Login"}
         </button>
+        <p className="text-muted mt-3 mb-0">
+          email: admin@example.com
+          <br />
+          password: admin12345
+        </p>
       </form>
     </div>
   );
