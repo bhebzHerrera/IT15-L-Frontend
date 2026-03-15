@@ -10,6 +10,7 @@ import SettingsPage from "./pages/SettingsPage";
 import StudentsPage from "./pages/StudentsPage";
 import SubjectsPage from "./pages/SubjectsPage";
 import CoursesPage from "./pages/CoursesPage";
+import AnnouncementsPage from "./pages/AnnouncementsPage";
 
 function ProtectedRoute({ children }) {
   const { isAuthenticated } = useAuth();
@@ -54,6 +55,7 @@ export default function App() {
         <Route path="students" element={<StudentsPage />} />
         <Route path="courses" element={<CoursesPage />} />
         <Route path="enrollment" element={<EnrollmentPage />} />
+        <Route path="announcements" element={<AnnouncementsPage />} />
         <Route path="reports" element={<ReportsPage />} />
         <Route path="settings" element={<SettingsPage />} />
       </Route>

@@ -127,3 +127,8 @@ export async function removeEnrollment(studentId, courseId) {
   });
   return response.data;
 }
+
+export async function getEnrollmentStatusSummary() {
+  const response = await apiClient.get("/enrollments/status-summary");
+  return response.data?.data || {};
+}

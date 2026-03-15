@@ -22,7 +22,7 @@ export default function SubjectsPage() {
     <section className="single-pane glass-card">
       <div className="section-title-row">
         <h3>Subject Offerings</h3>
-        <p>Live backend course list</p>
+        <p> course list</p>
       </div>
 
       <div className="table-wrap">

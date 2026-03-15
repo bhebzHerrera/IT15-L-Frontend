@@ -18,6 +18,12 @@ import WeatherWidget from "./dashboard/WeatherWidget";
 import { createActivity } from "../services/enrollmentService";
 
 const pieColors = ["#58f6c6", "#74a7ff", "#ffbb6f", "#ff8294"];
+const chartTooltipStyle = {
+  background: "rgba(7, 12, 36, 0.94)",
+  border: "1px solid rgba(255,255,255,0.2)",
+  borderRadius: "12px",
+  boxShadow: "0 12px 24px rgba(0,0,0,0.35)",
+};
 
 function SummaryCard({ label, value, note }) {
   return (
@@ -29,9 +35,9 @@ function SummaryCard({ label, value, note }) {
   );
 }
 
-function ChartShell({ title, subtitle, children }) {
+function ChartShell({ title, subtitle, children, className = "" }) {
   return (
-    <article className="chart-card glass-card">
+    <article className={`chart-card glass-card ${className}`.trim()}>
       <div className="section-title-row">
         <h3>{title}</h3>
         <p>{subtitle}</p>
@@ -194,28 +200,31 @@ export default function Dashboard({
       <div className="chart-grid">
         <ChartShell
           title="Monthly Enrollment Trends"
-          subtitle="Bar chart of enrolled students per month"
+          subtitle="Enrollment growth by month"
+          className="chart-card--legacy-size"
         >
           <ResponsiveContainer width="100%" height={260}>
             <BarChart data={dashboardData.enrollmentTrend}>
+              <defs>
+                <linearGradient id="enrollmentGradient" x1="0" y1="0" x2="0" y2="1">
+                  <stop offset="0%" stopColor="#58f6c6" stopOpacity={0.95} />
+                  <stop offset="100%" stopColor="#2ba9d3" stopOpacity={0.85} />
+                </linearGradient>
+              </defs>
               <CartesianGrid strokeDasharray="3 3" stroke="rgba(255,255,255,0.12)" />
               <XAxis dataKey="month" stroke="#d6d7f2" />
               <YAxis stroke="#d6d7f2" />
-              <Tooltip
-                contentStyle={{
-                  background: "rgba(13, 16, 45, 0.9)",
-                  border: "1px solid rgba(255,255,255,0.15)",
-                }}
-              />
+              <Tooltip contentStyle={chartTooltipStyle} />
               <Legend />
-              <Bar dataKey="enrollees" fill="#58f6c6" radius={[8, 8, 0, 0]} />
+              <Bar dataKey="enrollees" fill="url(#enrollmentGradient)" radius={[10, 10, 0, 0]} maxBarSize={42} />
             </BarChart>
           </ResponsiveContainer>
         </ChartShell>
 
         <ChartShell
           title="Student Distribution by Course"
-          subtitle="Pie chart across course groups"
+          subtitle="Population share per program"
+          className="chart-card--legacy-size"
         >
           <ResponsiveContainer width="100%" height={260}>
             <PieChart>
@@ -231,12 +240,7 @@ export default function Dashboard({
                   <Cell key={item.name} fill={pieColors[index % pieColors.length]} />
                 ))}
               </Pie>
-              <Tooltip
-                contentStyle={{
-                  background: "rgba(13, 16, 45, 0.9)",
-                  border: "1px solid rgba(255,255,255,0.15)",
-                }}
-              />
+              <Tooltip contentStyle={chartTooltipStyle} />
               <Legend />
             </PieChart>
           </ResponsiveContainer>
@@ -246,32 +250,45 @@ export default function Dashboard({
       <div className="chart-grid">
         <ChartShell
           title="Attendance Patterns"
-          subtitle="Line chart across school days"
+          subtitle="Daily attendance trend with highlight curve"
+          className="chart-card--hero chart-card--wide"
         >
           <ResponsiveContainer width="100%" height={260}>
             <LineChart data={dashboardData.attendancePatterns}>
+              <defs>
+                <linearGradient id="attendanceGradient" x1="0" y1="0" x2="1" y2="0">
+                  <stop offset="0%" stopColor="#74a7ff" />
+                  <stop offset="55%" stopColor="#58f6c6" />
+                  <stop offset="100%" stopColor="#8ab4ff" />
+                </linearGradient>
+                <filter id="attendanceGlow" x="-40%" y="-40%" width="180%" height="180%">
+                  <feGaussianBlur stdDeviation="2.8" result="glow" />
+                  <feMerge>
+                    <feMergeNode in="glow" />
+                    <feMergeNode in="SourceGraphic" />
+                  </feMerge>
+                </filter>
+              </defs>
               <CartesianGrid strokeDasharray="3 3" stroke="rgba(255,255,255,0.12)" />
               <XAxis dataKey="day" stroke="#d6d7f2" />
-              <YAxis stroke="#d6d7f2" domain={[80, 100]} />
-              <Tooltip
-                contentStyle={{
-                  background: "rgba(13, 16, 45, 0.9)",
-                  border: "1px solid rgba(255,255,255,0.15)",
-                }}
-              />
+              <YAxis stroke="#d6d7f2" domain={[75, 100]} />
+              <Tooltip contentStyle={chartTooltipStyle} />
               <Legend />
               <Line
                 type="monotone"
                 dataKey="attendance"
-                stroke="#74a7ff"
-                strokeWidth={3}
-                dot={{ fill: "#74a7ff", r: 4 }}
+                name="Attendance %"
+                stroke="url(#attendanceGradient)"
+                strokeWidth={4}
+                filter="url(#attendanceGlow)"
+                dot={{ fill: "#7db5ff", stroke: "#ffffff", strokeWidth: 1.4, r: 4.8 }}
+                activeDot={{ r: 7, fill: "#58f6c6", stroke: "#ffffff", strokeWidth: 2 }}
               />
             </LineChart>
           </ResponsiveContainer>
         </ChartShell>
 
-        <article className="activity-card glass-card">
+        <article className="activity-card glass-card activity-card--wide">
           <div className="section-title-row">
             <h3>Recent Activity</h3>
             <p>Latest frontend activity stream</p>
@@ -332,21 +349,23 @@ export default function Dashboard({
       <div className="chart-grid">
         <ChartShell
           title="Students By Year Level"
-          subtitle="Live distribution from student records"
+          subtitle="Distribution by year cohort"
+          className="chart-card--match-height"
         >
           <ResponsiveContainer width="100%" height={260}>
             <BarChart data={subjectTermData}>
+              <defs>
+                <linearGradient id="yearGradient" x1="0" y1="0" x2="0" y2="1">
+                  <stop offset="0%" stopColor="#ffcf7f" />
+                  <stop offset="100%" stopColor="#ff9f52" />
+                </linearGradient>
+              </defs>
               <CartesianGrid strokeDasharray="3 3" stroke="rgba(255,255,255,0.12)" />
               <XAxis dataKey="label" stroke="#d6d7f2" />
               <YAxis stroke="#d6d7f2" />
-              <Tooltip
-                contentStyle={{
-                  background: "rgba(13, 16, 45, 0.9)",
-                  border: "1px solid rgba(255,255,255,0.15)",
-                }}
-              />
+              <Tooltip contentStyle={chartTooltipStyle} />
               <Legend />
-              <Bar dataKey="subjects" fill="#ffbb6f" radius={[8, 8, 0, 0]} />
+              <Bar dataKey="subjects" fill="url(#yearGradient)" radius={[10, 10, 0, 0]} maxBarSize={42} />
             </BarChart>
           </ResponsiveContainer>
         </ChartShell>
@@ -374,9 +393,9 @@ export default function Dashboard({
         </article>
       </div>
 
-      <div className="chart-grid">
+      <div className="chart-grid chart-grid--weather">
         <WeatherWidget />
-        <article className="table-card glass-card">
+        <article className="table-card glass-card table-card--weather-match">
           <div className="section-title-row">
             <h3>Course Offerings Snapshot</h3>
             <p>Latest records from backend data</p>

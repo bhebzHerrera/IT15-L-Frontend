@@ -22,6 +22,45 @@ function formatDay(dateString) {
   return new Date(dateString).toLocaleDateString("en-US", { weekday: "short" });
 }
 
+function buildCityCandidates(input) {
+  const trimmed = input.trim();
+  if (!trimmed) {
+    return [];
+  }
+
+  const normalized = trimmed.replace(/\s+/g, " ");
+  const stripped = normalized
+    .replace(/\b(city|municipality|province|town)\b/gi, "")
+    .replace(/\s+,/g, ",")
+    .replace(/\s+/g, " ")
+    .trim();
+  const firstPart = normalized.split(",")[0]?.trim();
+
+  return [...new Set([normalized, stripped, firstPart].filter(Boolean))];
+}
+
+function extractCountryPreference(rawInput) {
+  const input = rawInput.trim();
+
+  const codeMatch = input.match(/,\s*([a-z]{2})\s*$/i);
+  if (codeMatch) {
+    return codeMatch[1].toUpperCase();
+  }
+
+  if (/\bphilippines\b|\bph\b/i.test(input)) {
+    return "PH";
+  }
+
+  return null;
+}
+
+function removeTrailingCountryHint(rawInput) {
+  return rawInput
+    .replace(/,\s*[a-z]{2}\s*$/i, "")
+    .replace(/,\s*philippines\s*$/i, "")
+    .trim();
+}
+
 function mapWeatherResponse(payload, cityName) {
   const currentDescriptor = getWeatherDescriptor(payload.current.weather_code);
 
@@ -69,6 +108,26 @@ async function fetchForecast(latitude, longitude, cityName) {
   return mapWeatherResponse(payload, cityName);
 }
 
+async function geocodeCity(cityQuery, countryCode = null) {
+  const geocodeUrl = `https://geocoding-api.open-meteo.com/v1/search?name=${encodeURIComponent(
+    cityQuery
+  )}&count=8&language=en&format=json${countryCode ? `&countryCode=${countryCode}` : ""}`;
+  const geocodeResponse = await fetch(geocodeUrl);
+
+  if (geocodeResponse.status === 429) {
+    const rateLimitError = new Error("rate_limited");
+    rateLimitError.code = "RATE_LIMITED";
+    throw rateLimitError;
+  }
+
+  if (!geocodeResponse.ok) {
+    throw new Error("City lookup failed");
+  }
+
+  const geocodePayload = await geocodeResponse.json();
+  return geocodePayload.results?.[0] ?? null;
+}
+
 export async function fetchWeatherByCity(cityName) {
   const trimmedCity = cityName.trim();
   if (!trimmedCity) {
@@ -76,23 +135,28 @@ export async function fetchWeatherByCity(cityName) {
   }
 
   try {
-    const geocodeUrl = `https://geocoding-api.open-meteo.com/v1/search?name=${encodeURIComponent(
-      trimmedCity
-    )}&count=1&language=en&format=json`;
-    const geocodeResponse = await fetch(geocodeUrl);
+    const explicitCountry = extractCountryPreference(trimmedCity);
+    const cleanedInput = removeTrailingCountryHint(trimmedCity);
+    const candidates = buildCityCandidates(cleanedInput || trimmedCity);
+    const countryPreference = explicitCountry || "PH";
+    let place = null;
 
-    if (geocodeResponse.status === 429) {
-      const rateLimitError = new Error("rate_limited");
-      rateLimitError.code = "RATE_LIMITED";
-      throw rateLimitError;
+    for (const candidate of candidates) {
+      place = await geocodeCity(candidate, countryPreference);
+      if (place) {
+        break;
+      }
     }
 
-    if (!geocodeResponse.ok) {
-      throw new Error("City lookup failed");
+    // If no local-country match is found, fallback to global search.
+    if (!place) {
+      for (const candidate of candidates) {
+        place = await geocodeCity(candidate);
+        if (place) {
+          break;
+        }
+      }
     }
-
-    const geocodePayload = await geocodeResponse.json();
-    const place = geocodePayload.results?.[0];
 
     if (!place) {
       const notFoundError = new Error("city_not_found");

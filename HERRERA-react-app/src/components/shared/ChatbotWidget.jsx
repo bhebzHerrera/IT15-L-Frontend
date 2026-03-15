@@ -1,8 +1,9 @@
 import { MessageCircle, Send, X } from "lucide-react";
 import { useMemo, useState } from "react";
 import { chatbotSuggestions } from "../../data/mockData";
+import { getEnrollmentStatusSummary } from "../../services/enrollmentService";
 
-function botReply(text) {
+async function botReply(text) {
   const normalized = text.toLowerCase();
   if (normalized.includes("deadline")) {
     return "Enrollment closes on March 28, 2026 for regular admission and April 3, 2026 for late registration.";
@@ -11,7 +12,13 @@ function botReply(text) {
     return "Required files are form 138, certificate of good moral, PSA birth certificate, and 2x2 ID photo.";
   }
   if (normalized.includes("status")) {
-    return "For this prototype, statuses are mock data. In Laravel integration, this panel will call /api/enrollments/{id}.";
+    try {
+      const summary = await getEnrollmentStatusSummary();
+
+      return `Current enrollment status summary: ${summary.total_students ?? 0} total students, ${summary.enrolled ?? 0} enrolled, ${summary.pending ?? 0} pending, ${summary.approved ?? 0} approved, ${summary.for_review ?? 0} for review, ${summary.probation ?? 0} probation, ${summary.rejected ?? 0} rejected, and ${summary.dropped ?? 0} dropped.`;
+    } catch {
+      return "I could not load real-time enrollment status right now. Please try again in a moment.";
+    }
   }
   return "I can help with enrollment deadlines, requirements, and status flow. Ask me a specific question.";
 }
@@ -29,9 +36,11 @@ export default function ChatbotWidget() {
 
   const visibleMessages = useMemo(() => messages.slice(-8), [messages]);
 
-  const sendMessage = (text) => {
+  const sendMessage = async (text) => {
     const clean = text.trim();
     if (!clean) return;
+
+    const replyText = await botReply(clean);
 
     const userMsg = {
       id: Date.now(),
@@ -41,7 +50,7 @@ export default function ChatbotWidget() {
     const response = {
       id: Date.now() + 1,
       sender: "bot",
-      text: botReply(clean),
+      text: replyText,
     };
 
     setMessages((prev) => [...prev, userMsg, response]);
@@ -82,7 +91,9 @@ export default function ChatbotWidget() {
               <button
                 key={suggestion}
                 type="button"
-                onClick={() => sendMessage(suggestion)}
+                onClick={() => {
+                  void sendMessage(suggestion);
+                }}
               >
                 {suggestion}
               </button>
@@ -93,7 +104,7 @@ export default function ChatbotWidget() {
             className="chat-input-row"
             onSubmit={(event) => {
               event.preventDefault();
-              sendMessage(input);
+              void sendMessage(input);
             }}
           >
             <input

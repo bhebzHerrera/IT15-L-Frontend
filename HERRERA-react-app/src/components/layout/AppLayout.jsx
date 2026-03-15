@@ -28,6 +28,10 @@ const TITLES = {
     title: "Enrollment",
     subtitle: "Current cycle applications and approvals",
   },
+  "/app/announcements": {
+    title: "Announcements",
+    subtitle: "Create and publish campus-wide updates",
+  },
   "/app/reports": {
     title: "Reports",
     subtitle: "Performance analytics and projections",
